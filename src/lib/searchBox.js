@@ -1,0 +1,97 @@
+import React from 'react';
+import SearchBooks from './searchBooks';
+import * as booksApi from '../BooksAPI';
+import   {Link}  from 'react-router-dom';
+class SearchBox extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+			showBooks:false,
+			searchBooks:[]
+        }
+		this.searchBook = this.searchBook.bind(this);
+		this.getAllBook = this.getAllBook.bind(this);
+        this.changeShelf = this.changeShelf.bind(this);
+
+    }
+	searchBook(){
+        var searchBookName;
+		console.log(0);
+        setTimeout(()=>{
+            searchBookName=document.getElementById('searchBox').value;
+            booksApi.search(searchBookName).then((book)=>{
+                console.log(book);
+                for(var a of book){
+                    for(var b of window.changedBooks){
+                        if(a.title==b.title){
+                            a.shelf=b.shelf;
+                        }else{
+                        }
+                    }
+                    console.log(a.shelf);
+                }
+                this.setState({showBooks:true , searchBooks:book});
+            });
+        },2000);
+    }
+	getAllBook(){
+		booksApi.getAll().then((books)=>{
+			var CRBook=[];
+			var WTRBook=[];
+			var RBook=[];
+			for (var _book of books) {
+				switch (_book.shelf) {
+					case 'currentlyReading':
+						CRBook.push(_book);
+						break;
+					case 'wantToRead':
+						WTRBook.push(_book);
+						break;
+					case 'read':
+						RBook.push(_book);
+						break;
+					default:
+				}
+			};
+			this.setState({currentlyReading:CRBook,wantToRead:WTRBook,read:RBook});
+		})
+	}
+	changeShelf(a,b){
+		booksApi.update(b,a).then((success)=>{
+			// this.getAllBook();
+			this.setState({flashPage:false});
+		},(error)=>{
+			console.log(error);
+		});
+	}
+	render(){
+        console.log(window.changedBooks);
+		return(
+			<div className="search-books">
+              <div className="search-books-bar">
+                <Link to="/" className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</Link>
+                <div className="search-books-input-wrapper">
+                  {
+
+                  }
+                  <input id='searchBox' type="text" placeholder="Search by title or author" onChange={this.searchBook}/>
+
+                </div>
+              </div>
+              <div className="search-books-results">
+
+
+                  {this.state.showBooks?(
+                      <SearchBooks read={window.read} wantToRead={window.wantToRead} currentlyReading={window.currentlyReading} changeShelf={this.changeShelf} books={this.state.searchBooks}/>
+                  ):(
+                      <p></p>
+                  )}
+
+
+              </div>
+            </div>
+
+		)
+	}
+}
+export default SearchBox
