@@ -8,9 +8,13 @@ class Book extends React.Component {
         }
     }
     render() {
+
+		// console.log(this.props);
 		const title = this.props.book.title;
 		const authors = this.props.book.authors;
 		const url = this.props.book.imageLinks.smallThumbnail;
+		const { book } = this.props;
+		const thumbnail = book.imageLinks ? book.imageLinks.smallThumbnail : "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522993996514&di=e39b1868536e1890cf3b108989b209cf&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20160325%2Fb4cf34ac41024f92a3fdfb605b8c64c3_th.jpg";
 		return(
 			<li>
 		 	 <div className="book">

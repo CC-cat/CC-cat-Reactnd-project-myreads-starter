@@ -5,6 +5,7 @@ import List from './lib/list';
 import   {Link}  from 'react-router-dom';
 import SearchBox from './lib/searchBox';
 import ReactDOM from 'react-dom';
+import App from './App';
 import {
   BrowserRouter as Router,
   Route
@@ -33,10 +34,10 @@ class BooksApp extends React.Component {
     }
     getAllBook(){
         booksApi.getAll().then((books)=>{
-            var CRBook=[];
-            var WTRBook=[];
-            var RBook=[];
-            for (var _book of books) {
+            let CRBook=[];
+            let WTRBook=[];
+            let RBook=[];
+            for (let _book of books) {
                 window.changedBooks.push(_book);
                 switch (_book.shelf) {
                     case 'currentlyReading':
@@ -66,7 +67,7 @@ class BooksApp extends React.Component {
         });
     }
     searchBook(){
-        var searchBookName;
+        let searchBookName;
         console.log(1);
         setTimeout(()=>{
             searchBookName=document.getElementById('searchBox').value;
@@ -80,36 +81,48 @@ class BooksApp extends React.Component {
       this.getAllBook();
   }
   render() {
+      // console.log(typeof this.state.allList);
     return (
+
       <div className="app">
-        {this.state.showSearchPage ? (
+      <Route exact path="/Search" render={() => (
+          <SearchBox changedBooks={window.changedBooks} currentlyReading={this.state.currentlyReading} wantToRead={this.state.wantToRead} read={this.state.read} showBooks={this.state.showBooks} changeShelf={this.changeShelf} books={this.state.searchBooks} searchBook={this.searchBook}/>
+      )}/>
+        <Route exact path="/" render={() => (
+            <div className="list-books">
+                <div className="list-books-title">
+                  <h1>MyReads</h1>
+                </div>
+                <div className="list-books-content">
+                  <div>
+                    {
+                        this.state.allList.map((list) => <List flashPage={this.flashPage} changeShelf={this.changeShelf} key={list.listTitle}  info={{title:list.listTitle,books:this.state[list.listTitle]}}/>)
+                    }
+                  </div>
+                </div>
+                <div className="open-search">
 
-            <Route path="/search" render={() => (
-                <SearchBox changedBooks={window.changedBooks} currentlyReading={this.state.currentlyReading} wantToRead={this.state.wantToRead} read={this.state.read} showBooks={this.state.showBooks} changeShelf={this.changeShelf} books={this.state.searchBooks} searchBook={this.searchBook}/>
-            )}/>
+                  <Link to={{
+                      pathname: '/Search',
+                      search: '?sort=name',
+                      hash: '#the-hash',
+                      state: {
+                          read:this.state.read,
+                          wantToRead: this.state.wantToRead,
+                          currentlyReading: this.state.currentlyReading,
+                          showBooks:this.state.showBooks,
+
+                          books:this.state.searchBooks,
+                      }
+                  }}/>
 
 
-        ) : (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            <div className="list-books-content">
-              <div>
-                {
-                    this.state.allList.map((list) => <List flashPage={this.flashPage} changeShelf={this.changeShelf} key={list.listTitle}  info={{title:list.listTitle,books:this.state[list.listTitle]}}/>)
-                }
+                </div>
               </div>
-            </div>
-            <div className="open-search">
+        )}/>
 
-              <Link to="/Search" onClick={() => this.setState({ showSearchPage: true })}>
-              Add a book
 
-              </Link>
-            </div>
-          </div>
-        )}
+
 
       </div>
 

@@ -15,14 +15,14 @@ class SearchBox extends React.Component {
 
     }
 	searchBook(){
-        var searchBookName;
+        let searchBookName;
 		console.log(0);
         setTimeout(()=>{
             searchBookName=document.getElementById('searchBox').value;
             booksApi.search(searchBookName).then((book)=>{
                 console.log(book);
-                for(var a of book){
-                    for(var b of window.changedBooks){
+                for(let a of book){
+                    for(let b of window.changedBooks){
                         if(a.title==b.title){
                             a.shelf=b.shelf;
                         }else{
@@ -36,10 +36,10 @@ class SearchBox extends React.Component {
     }
 	getAllBook(){
 		booksApi.getAll().then((books)=>{
-			var CRBook=[];
-			var WTRBook=[];
-			var RBook=[];
-			for (var _book of books) {
+			let CRBook=[];
+			let WTRBook=[];
+			let RBook=[];
+			for (let _book of books) {
 				switch (_book.shelf) {
 					case 'currentlyReading':
 						CRBook.push(_book);
@@ -65,7 +65,8 @@ class SearchBox extends React.Component {
 		});
 	}
 	render(){
-        console.log(window.changedBooks);
+        console.log(this.props.location.state);
+        console.log(this.state);
 		return(
 			<div className="search-books">
               <div className="search-books-bar">
@@ -82,7 +83,7 @@ class SearchBox extends React.Component {
 
 
                   {this.state.showBooks?(
-                      <SearchBooks read={window.read} wantToRead={window.wantToRead} currentlyReading={window.currentlyReading} changeShelf={this.changeShelf} books={this.state.searchBooks}/>
+                      <SearchBooks read={this.props.location.state.read} wantToRead={this.props.location.state.wantToRead} currentlyReading={this.props.location.state.currentlyReading} changeShelf={this.changeShelf} books={this.state.searchBooks}/>
                   ):(
                       <p></p>
                   )}

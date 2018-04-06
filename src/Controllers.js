@@ -1,12 +1,12 @@
 import React from 'react';
-var CRBook = [];
-var WTRBook = [];
-var RBook = [];
+let CRBook = [];
+let WTRBook = [];
+let RBook = [];
 
 
 export const checkBooks = (response) => {
     response.then(function(books) {
-        for (var _book of books) {
+        for (let _book of books) {
             switch (_book.shelf) {
                 case 'currentlyReading':
                     CRBook.push(makeBookList(_book));
@@ -20,7 +20,7 @@ export const checkBooks = (response) => {
                 default:
             }
         };
-		var _allBook = [CRBook,WTRBook,RBook];
+		let _allBook = [CRBook,WTRBook,RBook];
 		console.log(CRBook);
 		return CRBook;
     })
